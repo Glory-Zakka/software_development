@@ -1,0 +1,11 @@
+record_id,customer,city,orders,amount
+101,Ada,Lagos,3,750
+102,Tobi,,2,1200
+103,,Abuja,1,500
+104,Zara,Kano,,350
+105,Mina,Lagos,4,
+106,Bola,,,900
+107,,Ibadan,2,
+108,Chidi,Abuja,5,2000
+109,Nora,Lagos,1,400
+110,Emeka,Kano,3,850

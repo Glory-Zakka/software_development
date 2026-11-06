@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nascomsoft Course Registration</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>NASCOMSOFT EMBEDDED LTD</h1>
+    <p>Course Registration &amp; Enrollment Dashboard</p>
+  </header>
+  <main class="container">
+    {% if success %}<p class="notice success">{{ success }}</p>{% endif %}
+    {% if error %}<p class="notice error">{{ error }}</p>{% endif %}
+
+    <section class="panel">
+      <h2>Register a student</h2>
+      <form method="post" action="/ui/register" class="form-grid">
+        <label>Full name
+          <input type="text" name="student_name" required>
+        </label>
+        <label>Email
+          <input type="email" name="email" required>
+        </label>
+        <label>Phone
+          <input type="tel" name="phone" required>
+        </label>
+        <label>Course
+          <select name="course_id" required>
+            {% for course in courses %}
+            <option value="{{ course.course_id }}">{{ course.title }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <button type="submit">Register student</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Available courses</h2>
+      <div class="course-grid">
+        {% for course in courses %}
+        <article class="course-card">
+          <strong>{{ course.title }}</strong>
+          <span>{{ course.duration }}</span>
+          <p>{{ course.description }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Enrollment records</h2>
+      <form method="get" action="/" class="filter-row">
+        <label>Filter by course
+          <select name="course_id">
+            <option value="">All courses</option>
+            {% for course in courses %}
+            <option value="{{ course.course_id }}"
+              {% if active_course == course.course_id %}selected{% endif %}>
+              {{ course.title }}
+            </option>
+            {% endfor %}
+          </select>
+        </label>
+        <button type="submit">Apply filter</button>
+        <a href="/">Clear</a>
+      </form>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Course ID</th></tr>
+        </thead>
+        <tbody>
+          {% for item in enrollments %}
+          <tr>
+            <td>{{ item.enrollment_id }}</td>
+            <td>{{ item.student_name }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.course_id }}</td>
+          </tr>
+          <tr class="action-row"><td colspan="4">
+            <details>
+              <summary>Edit or delete enrollment #{{ item.enrollment_id }}</summary>
+              <form method="post"
+                    action="/ui/enrollments/{{ item.enrollment_id }}/update"
+                    class="form-grid small">
+                <label>Name <input name="student_name"
+                       value="{{ item.student_name }}" required></label>
+                <label>Email <input type="email" name="email"
+                       value="{{ item.email }}" required></label>
+                <label>Phone <input name="phone"
+                       value="{{ item.phone }}" required></label>
+                <label>Course
+                  <select name="course_id">
+                    {% for course in courses %}
+                    <option value="{{ course.course_id }}"
+                      {% if item.course_id == course.course_id %}selected{% endif %}>
+                      {{ course.title }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </label>
+                <button type="submit">Save changes</button>
+              </form>
+              <form method="post"
+                    action="/ui/enrollments/{{ item.enrollment_id }}/delete">
+                <button class="danger" type="submit">Delete enrollment</button>
+              </form>
+            </details>
+          </td></tr>
+          {% else %}
+          <tr><td colspan="4">No enrollments to display yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    <p class="footnote">Classroom demonstration only. Use fictional data.</p>
+  </main>
+</body>
+</html>
